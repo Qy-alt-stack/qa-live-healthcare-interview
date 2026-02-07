@@ -23,10 +23,19 @@
           关于
         </a-menu-item>
       </a-menu>
-      <a-button type="primary" class="login-btn" @click="navigateTo('/doctor/login')">
-        <UserOutlined />
-        医生登录
-      </a-button>
+      <div class="header-actions">
+        <a-select
+          v-model:value="currentLocale"
+          size="small"
+          class="language-select"
+          :options="languageOptions"
+          @change="handleLanguageChange"
+        />
+        <a-button type="primary" class="login-btn" @click="navigateTo('/doctor/login')">
+          <UserOutlined />
+          医生登录
+        </a-button>
+      </div>
     </div>
   </a-layout-header>
 </template>
@@ -35,10 +44,18 @@
 import { ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { HomeOutlined, MessageOutlined, TeamOutlined, InfoCircleOutlined, UserOutlined } from '@ant-design/icons-vue';
+import { useI18n } from '../composables/useI18n';
 
 const router = useRouter();
 const route = useRoute();
 const selectedKeys = ref<string[]>(['home']);
+const { locale, setLocale } = useI18n();
+const currentLocale = ref(locale.value);
+
+const languageOptions = [
+  { value: 'zh', label: '中文' },
+  { value: 'en', label: 'English' }
+];
 
 watch(() => route.path, (newPath) => {
   if (newPath === '/') {
@@ -54,6 +71,10 @@ watch(() => route.path, (newPath) => {
 
 const navigateTo = (path: string) => {
   router.push(path);
+};
+
+const handleLanguageChange = (value: string) => {
+  setLocale(value as 'zh' | 'en');
 };
 </script>
 
@@ -106,6 +127,16 @@ const navigateTo = (path: string) => {
   border: none;
   margin: 0 40px;
   line-height: 64px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.language-select {
+  width: 100px;
 }
 
 .login-btn {
