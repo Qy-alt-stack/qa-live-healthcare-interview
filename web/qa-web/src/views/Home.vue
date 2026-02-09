@@ -2,28 +2,28 @@
   <div class="home">
     <section class="hero">
       <div class="hero-content">
-        <h1>{{ t('home.title') }}</h1>
-        <p class="hero-subtitle">{{ t('home.subtitle') }}</p>
+        <h1>专业在线医疗问诊平台</h1>
+        <p class="hero-subtitle">连接专业医生与患者,提供便捷、高效的医疗咨询服务</p>
         <div class="hero-features">
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>{{ t('home.features.doctorTeam') }}</span>
+            <span>专业医生团队</span>
           </div>
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>{{ t('home.features.realtimeConsultation') }}</span>
+            <span>实时在线问诊</span>
           </div>
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>{{ t('home.features.privacySecurity') }}</span>
+            <span>隐私安全保护</span>
           </div>
         </div>
         <div class="hero-actions">
           <a-button type="primary" size="large" @click="navigateTo('/consultation')">
-            {{ t('home.actions.consultNow') }}
+            立即问诊
           </a-button>
           <a-button size="large" @click="navigateTo('/doctors')">
-            {{ t('home.actions.viewDoctors') }}
+            查看医生
           </a-button>
         </div>
       </div>
@@ -39,7 +39,7 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.totalDoctors }}</h3>
-          <p>{{ t('home.statistics.doctors') }}</p>
+          <p>专业医生</p>
         </div>
       </div>
       <div class="stat-card">
@@ -48,7 +48,7 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.totalQuestions }}</h3>
-          <p>{{ t('home.statistics.questions') }}</p>
+          <p>问题总数</p>
         </div>
       </div>
       <div class="stat-card">
@@ -57,7 +57,7 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.activeSessions }}</h3>
-          <p>{{ t('home.statistics.activeSessions') }}</p>
+          <p>待响应问题</p>
         </div>
       </div>
       <div class="stat-card">
@@ -66,14 +66,14 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.totalSessions }}</h3>
-          <p>{{ t('home.statistics.onlineRooms') }}</p>
+          <p>在线诊室</p>
         </div>
       </div>
     </section>
 
     <section class="active-rooms">
-      <h2>{{ t('home.activeRooms.title') }}</h2>
-      <p class="section-subtitle">{{ t('home.activeRooms.subtitle') }}</p>
+      <h2>开放诊室</h2>
+      <p class="section-subtitle">以下医生诊室正在开放,欢迎咨询</p>
       <div class="rooms-grid">
         <div
           v-for="doctor in activeDoctors"
@@ -83,7 +83,7 @@
         >
           <div class="room-header">
             <img :src="doctor.avatar" :alt="doctor.name" class="doctor-avatar" />
-            <a-badge status="processing" :text="t('home.activeRooms.onlineStatus')" />
+            <a-badge status="processing" text="在线" />
           </div>
           <div class="room-body">
             <h3>{{ doctor.name }}</h3>
@@ -96,7 +96,7 @@
             </div>
           </div>
           <div class="room-footer">
-            <a-button type="primary" block>{{ t('home.activeRooms.enterRoom') }}</a-button>
+            <a-button type="primary" block>进入诊室</a-button>
           </div>
         </div>
       </div>
@@ -108,7 +108,6 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { store } from '../store';
-import { useI18n } from '../composables/useI18n';
 import {
   CheckCircleOutlined,
   TeamOutlined,
@@ -118,7 +117,6 @@ import {
 } from '@ant-design/icons-vue';
 
 const router = useRouter();
-const { t } = useI18n();
 
 const statistics = computed(() => store.getStatistics());
 const activeDoctors = computed(() => store.getActiveDoctors());
