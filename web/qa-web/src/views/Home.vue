@@ -1,29 +1,39 @@
 <template>
   <div class="home">
+    <div class="language-switcher">
+      <a-select
+        :value="currentLocale"
+        :options="languageOptions"
+        size="small"
+        style="width: 120px"
+        @change="onLocaleChange"
+      />
+    </div>
+
     <section class="hero">
       <div class="hero-content">
-        <h1>专业在线医疗问诊平台</h1>
-        <p class="hero-subtitle">连接专业医生与患者,提供便捷、高效的医疗咨询服务</p>
+        <h1>{{ $t('home.hero.title') }}</h1>
+        <p class="hero-subtitle">{{ $t('home.hero.subtitle') }}</p>
         <div class="hero-features">
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>专业医生团队</span>
+            <span>{{ $t('home.hero.features.doctors') }}</span>
           </div>
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>实时在线问诊</span>
+            <span>{{ $t('home.hero.features.consultation') }}</span>
           </div>
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>隐私安全保护</span>
+            <span>{{ $t('home.hero.features.privacy') }}</span>
           </div>
         </div>
         <div class="hero-actions">
           <a-button type="primary" size="large" @click="navigateTo('/consultation')">
-            立即问诊
+            {{ $t('home.hero.actions.consultation') }}
           </a-button>
           <a-button size="large" @click="navigateTo('/doctors')">
-            查看医生
+            {{ $t('home.hero.actions.doctors') }}
           </a-button>
         </div>
       </div>
@@ -39,7 +49,7 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.totalDoctors }}</h3>
-          <p>专业医生</p>
+          <p>{{ $t('home.stats.doctors') }}</p>
         </div>
       </div>
       <div class="stat-card">
@@ -48,7 +58,7 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.totalQuestions }}</h3>
-          <p>问题总数</p>
+          <p>{{ $t('home.stats.questions') }}</p>
         </div>
       </div>
       <div class="stat-card">
@@ -57,7 +67,7 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.activeSessions }}</h3>
-          <p>待响应问题</p>
+          <p>{{ $t('home.stats.pending') }}</p>
         </div>
       </div>
       <div class="stat-card">
@@ -66,14 +76,14 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.totalSessions }}</h3>
-          <p>在线诊室</p>
+          <p>{{ $t('home.stats.rooms') }}</p>
         </div>
       </div>
     </section>
 
     <section class="active-rooms">
-      <h2>开放诊室</h2>
-      <p class="section-subtitle">以下医生诊室正在开放,欢迎咨询</p>
+      <h2>{{ $t('home.rooms.title') }}</h2>
+      <p class="section-subtitle">{{ $t('home.rooms.subtitle') }}</p>
       <div class="rooms-grid">
         <div
           v-for="doctor in activeDoctors"
@@ -83,7 +93,7 @@
         >
           <div class="room-header">
             <img :src="doctor.avatar" :alt="doctor.name" class="doctor-avatar" />
-            <a-badge status="processing" text="在线" />
+            <a-badge status="processing" :text="$t('home.rooms.online')" />
           </div>
           <div class="room-body">
             <h3>{{ doctor.name }}</h3>
@@ -96,7 +106,7 @@
             </div>
           </div>
           <div class="room-footer">
-            <a-button type="primary" block>进入诊室</a-button>
+            <a-button type="primary" block>{{ $t('home.rooms.enterRoom') }}</a-button>
           </div>
         </div>
       </div>
@@ -107,7 +117,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { store } from '../store';
+import { languageOptions } from '../locales';
 import {
   CheckCircleOutlined,
   TeamOutlined,
@@ -117,18 +129,33 @@ import {
 } from '@ant-design/icons-vue';
 
 const router = useRouter();
+const { locale } = useI18n();
 
+const currentLocale = computed(() => locale.value);
 const statistics = computed(() => store.getStatistics());
 const activeDoctors = computed(() => store.getActiveDoctors());
 
 const navigateTo = (path: string) => {
   router.push(path);
 };
+
+const onLocaleChange = (value: string) => {
+  locale.value = value;
+  localStorage.setItem('locale', value);
+};
 </script>
 
 <style scoped>
 .home {
   padding-top: 64px;
+  position: relative;
+}
+
+.language-switcher {
+  position: absolute;
+  top: 80px;
+  right: 24px;
+  z-index: 100;
 }
 
 .hero {

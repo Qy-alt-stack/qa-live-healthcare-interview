@@ -1,12 +1,12 @@
 import { reactive } from 'vue';
-import doctorData from '../data/doctor-user-list.json';
 import patientData from '../data/patient-user.json';
 import questionData from '../data/question-list.json';
+
+const API_BASE = 'http://localhost:8080';
 
 export interface Doctor {
   id: string;
   username: string;
-  password: string;
   name: string;
   title: string;
   department: string;
@@ -46,7 +46,7 @@ interface State {
 }
 
 const state = reactive<State>({
-  doctors: doctorData as Doctor[],
+  doctors: [],
   patients: patientData as Patient[],
   questions: questionData as Question[],
   currentDoctor: null,
@@ -56,13 +56,36 @@ const state = reactive<State>({
 export const store = {
   state,
 
-  loginDoctor(username: string, password: string): Doctor | null {
-    const doctor = state.doctors.find(
-      d => d.username === username && d.password === password
-    );
-    if (doctor) {
-      state.currentDoctor = doctor;
-      return doctor;
+  async fetchDoctors(): Promise<void> {
+    try {
+      const res = await fetch(`${API_BASE}/api/doctors`);
+      const json = await res.json();
+      if (json.code === 0 && Array.isArray(json.data)) {
+        state.doctors = json.data;
+      }
+    } catch (err) {
+      console.error('Failed to fetch doctors:', err);
+    }
+  },
+
+  async initDoctors(): Promise<void> {
+    await this.fetchDoctors();
+  },
+
+  async loginDoctor(username: string, password: string): Promise<Doctor | null> {
+    try {
+      const res = await fetch(`${API_BASE}/api/doctors/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const json = await res.json();
+      if (json.code === 0) {
+        state.currentDoctor = json.data;
+        return json.data;
+      }
+    } catch (err) {
+      console.error('Login failed:', err);
     }
     return null;
   },
